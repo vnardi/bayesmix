@@ -142,6 +142,7 @@ TEST(lpdf, nnw) {
   // Datum
   Eigen::RowVectorXd datum(2);
   datum << 4.5, 4.5;
+  hier.clear_data();
   hier.add_datum(1, datum, true);
   // std::cout << hier.get_posterior_hypers().mean << std::endl;
   // Compute prior
