@@ -54,7 +54,6 @@ TEST(lpdf, nnig) {
   ASSERT_DOUBLE_EQ(sum, marg);
 }
 
-
 TEST(lpdf, lin_reg_uni) {
   // Create hierarchy objects
   LinRegUniHierarchy hier;
@@ -173,4 +172,67 @@ TEST(lpdf, nnw) {
   std::cout << "sum   =" << logsum << std::endl;
   std::cout << "marg  =" << logmarg << std::endl;
   ASSERT_DOUBLE_EQ(logsum, logmarg);
+}
+
+TEST(lpdf, nnw2) {
+  using namespace stan::math;
+  NNWHierarchy hier;
+
+  NNW::Hyperparams prior_params;
+  prior_params.mean = Eigen::VectorXd::Ones(2) * 5.5;
+  prior_params.var_scaling = 0.2;
+  prior_params.deg_free = 10;
+  prior_params.scale = Eigen::MatrixXd::Identity(2, 2) * 0.5;
+  prior_params.scale_inv = inverse_spd(prior_params.scale);
+  hier.set_hypers(prior_params);
+  std::cout << "set hypers ok" << std::endl;
+
+  NNW::State curr_state;
+  curr_state.mean = Eigen::VectorXd::Ones(2) * 5.0;
+  curr_state.prec = Eigen::MatrixXd::Identity(2, 2) * 1.0;
+  curr_state.prec_chol =
+      Eigen::LLT<Eigen::MatrixXd>(curr_state.prec).matrixL().transpose();
+  Eigen::VectorXd diag = curr_state.prec_chol.diagonal();
+  curr_state.prec_logdet = 2 * log(diag.array()).sum();
+  hier.set_state(curr_state);
+
+  Eigen::VectorXd datum = Eigen::VectorXd::Ones(2) * 15.5;
+  hier.clear_data();
+  hier.add_datum(0, datum);
+  NNW::Hyperparams post_params = hier.get_posterior_parameters();
+
+  double prior_lpdf =
+      multi_normal_prec_lpdf(curr_state.mean, prior_params.mean,
+                             curr_state.prec * prior_params.var_scaling) +
+      wishart_lpdf(curr_state.prec, prior_params.deg_free, prior_params.scale);
+
+  double post_lpdf =
+      multi_normal_prec_lpdf(curr_state.mean, post_params.mean,
+                             curr_state.prec * post_params.var_scaling) +
+      wishart_lpdf(curr_state.prec, post_params.deg_free, post_params.scale);
+
+  double like_lpdf = hier.like_lpdf(datum);
+
+  double marg_lpdf = hier.marg_lpdf(prior_params, datum);
+
+  double marg_murphy;
+  double num = lmgamma(2, 0.5 * post_params.deg_free) +
+               0.5 * prior_params.deg_free *
+                   std::log(prior_params.scale_inv.determinant());
+  double den = 2 * ((-1) * NEG_LOG_SQRT_TWO_PI) *
+                   lmgamma(2, 0.5 * prior_params.deg_free) +
+               0.5 * prior_params.deg_free *
+                   std::log(post_params.scale_inv.determinant());
+
+  marg_murphy =
+      num - den +
+      1.0 * std::log(prior_params.var_scaling / post_params.var_scaling);
+
+  std::cout << "marg_murphy: " << marg_murphy << std::endl;
+  std::cout << "marg_lpdf: " << marg_lpdf << std::endl;
+  std::cout << "sums: " << prior_lpdf + like_lpdf - post_lpdf << std::endl;
+
+  ASSERT_DOUBLE_EQ(marg_lpdf, prior_lpdf + like_lpdf - post_lpdf);
+  ASSERT_DOUBLE_EQ(marg_murphy, prior_lpdf + like_lpdf - post_lpdf);
+  ASSERT_DOUBLE_EQ(marg_lpdf, prior_lpdf + like_lpdf - post_lpdf);
 }
