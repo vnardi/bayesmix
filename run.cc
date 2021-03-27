@@ -45,7 +45,6 @@ int main(int argc, char *argv[]) {
   auto hier = factory_hier.create_object(hier_type);
   auto mixing = factory_mixing.create_object(mix_type);
   BaseCollector *coll;
-  MemoryCollector *coll = new MemoryCollector();
   if (collname == "") {
     coll = new MemoryCollector();
   } else {
