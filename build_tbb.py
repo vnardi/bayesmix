@@ -34,7 +34,10 @@ def maybe_build_tbb():
     print(cwd)
     print(" ".join(cmd))
 
-    subprocess.check_call(cmd, cwd=cwd)
+    try:
+        subprocess.check_call(cmd, cwd=cwd)
+    except Exception as e:
+        print(e)
 
     tbb_debug = os.path.join(stan_math_lib, "tbb_debug")
     tbb_release = os.path.join(stan_math_lib, "tbb_release")
