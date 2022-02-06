@@ -19,7 +19,7 @@ if __name__ == "__main__":
   # Algorithm settings
   settings = algorithm_params_pb2.AlgorithmParams()
   settings.algo_id = "SplitMerge"
-  settings.rng_seed = 6159649556466901
+  settings.rng_seed = 4234231 
   settings.iterations = 5000
   settings.burnin = 1000
   settings.init_num_clusters = 3
@@ -54,7 +54,7 @@ if __name__ == "__main__":
   # Algorithm settings
   settings = algorithm_params_pb2.AlgorithmParams()
   settings.algo_id = "SplitMerge"
-  settings.rng_seed = 6159649556466901
+  settings.rng_seed = 4234231 
   settings.iterations = 5000
   settings.burnin = 1000
   settings.init_num_clusters = 3

@@ -5,23 +5,26 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import arviz as az
 
-resources_path = "../../resources/split_and_merge_tests/"
-
-# Generate asciipb files
-subprocess.run(["python", "generate_asciipb.py"], capture_output=True)
-
+resources_path = "./resources/split_and_merge_tests/"
 
 for dataset in ["galaxy", "faithful"]:
-	cmd = ["../../bash/split_and_merge_tests.sh", dataset]
-	subprocess.run(cmd, capture_output=True)
+	cmd = ["./bash/split_and_merge_tests.sh", dataset]
+	result = subprocess.run(cmd, capture_output=True)
+	print(result.stdout.decode("utf-8"))
+	print(result.stderr.decode("utf-8"))
 
 	output_path = resources_path+dataset+"_tests/out/"
 
 	density = np.genfromtxt(output_path+"density_file.csv", delimiter=",")
 	best_clust = np.genfromtxt(output_path+"best_clustering.csv", delimiter=",")
 
-	data = np.genfromtxt(f"resources/datasets/{dataset}.csv")
-	grid = np.genfromtxt(f"resources/datasets/{dataset}_grid.csv")
+	delimiter=" "
+	if(dataset=="faithful"):
+		delimiter=","
+	data = np.genfromtxt(f"resources/datasets/{dataset}.csv",\
+		delimiter=delimiter)
+	grid = np.genfromtxt(f"resources/datasets/{dataset}_grid.csv",\
+		delimiter=delimiter)
 
 	n_clust = np.genfromtxt(output_path+"numclust.csv", delimiter=",")
 
@@ -46,6 +49,7 @@ for dataset in ["galaxy", "faithful"]:
 	elif dataset=="faithful":
 		fig, axes = plt.subplots(1,1, figsize=(14,5))
 		dens = np.mean(density[0::2], axis=0).reshape(-1, 1)
+
 		plot_data = pd.DataFrame(np.hstack([grid, dens]), columns=["x", "y", "z"])
 		Z = plot_data.pivot_table(index="x", columns="y", values="z").T.values
 		X_unique = np.sort(plot_data.x.unique())

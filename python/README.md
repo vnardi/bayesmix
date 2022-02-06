@@ -116,3 +116,15 @@ init_num_clusters: 3
 ```
 
 See the notebook in `notebooks/gaussian_mix_uni.ipynb` for a concrete usage example
+
+### Testing Split And Merge
+
+This branch has been created to test the Split and Merge algorithm on `galaxy` and `faithful` datasets. 
+
+The settings of the tests can be found in the file `python/split_and_merge_tests/generate_asciipb.py`.
+
+To run the tests, just run the file `split_and_merge_tests.sh` from the root folder. 
+
+The results can be found in the following folders:
+`resources/split_and_merge_tests/galaxy_tests/out/`
+`resources/split_and_merge_tests/faithful_tests/out/`
