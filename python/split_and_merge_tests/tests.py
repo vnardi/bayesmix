@@ -43,7 +43,7 @@ for dataset in ["galaxy", "faithful"]:
 		axes.set_title(f"{dataset} clustering with DP")
 		plt.savefig(output_path+f"{dataset}_cluster.png", dpi=500)
 		plt.close()
-	else if dataset=="faithful":
+	elif dataset=="faithful":
 		fig, axes = plt.subplots(1,1, figsize=(14,5))
 		dens = np.mean(density[0::2], axis=0).reshape(-1, 1)
 		plot_data = pd.DataFrame(np.hstack([grid, dens]), columns=["x", "y", "z"])
