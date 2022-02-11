@@ -41,7 +41,7 @@ for dataset in ["galaxy", "faithful"]:
 
 		fig, axes = plt.subplots(1,1, figsize=(14,5))
 		axes.scatter(data, np.repeat("SplitAndMerge", len(best_clust)),\
-			c=best_clust, cmap='hsv')
+			c=best_clust, cmap='Set1')
 		axes.set_ylim(-1, 3)
 		axes.set_title(f"{dataset} clustering with DP")
 		plt.savefig(output_path+f"{dataset}_cluster.png", dpi=500)
@@ -61,7 +61,7 @@ for dataset in ["galaxy", "faithful"]:
 		plt.close()
 
 		fig, axes = plt.subplots(1,1, figsize=(14,5))
-		axes.scatter(data[:,0], data[:,1], c=best_clust, cmap='hsv')
+		axes.scatter(data[:,0], data[:,1], c=best_clust, cmap='Set1')
 		axes.set_title(f"{dataset} clustering with DP")
 		plt.savefig(output_path+f"{dataset}_cluster.png", dpi=500)
 		plt.close()
