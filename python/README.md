@@ -119,12 +119,22 @@ See the notebook in `notebooks/gaussian_mix_uni.ipynb` for a concrete usage exam
 
 ### Testing Split And Merge
 
-This branch has been created to test the Split and Merge algorithm on `galaxy` and `faithful` datasets. 
+#### `galaxy` and `faithful`
 
 The settings of the tests can be found in the file `python/split_and_merge_tests/generate_asciipb.py`.
 
-To run the tests, just run the file `split_and_merge_tests.sh` from the root folder. 
+To run the tests, just run the file `split_and_merge_tests.sh` from the root folder.
 
 The results can be found in the following folders:
 `resources/split_and_merge_tests/galaxy_tests/out/`
 `resources/split_and_merge_tests/faithful_tests/out/`
+
+#### Synthetic high dimensional datasets
+
+To generate the datasets, use command:
+`python python/split_and_merge_tests/high_dim_tests/generate_datasets.py`
+from the root. To select the dimensions to generate, modify the file `generate_datasets.py`.
+
+To run the tests, just run the file `high_dim_split_and_merge_tests.sh` from the root folder.
+The file with the list of dimensions to test can be found at `resources/split_and_merge_tests/high_dim_tests/dim_to_test.csv`.
+To test on a certain dimension, you first need to generate the corresponding dataset.
